@@ -23,13 +23,13 @@ impl Command {
     }
 
     pub fn write_headers<W: Write>(&self, w: &mut W) -> io::Result<()> {
-        w.write(b"% ")?;
-        w.write(self.title.as_bytes())?;
-        w.write(b"\n")?;
+        w.write_all(b"% ")?;
+        w.write_all(self.title.as_bytes())?;
+        w.write_all(b"\n")?;
 
-        w.write(b"& ")?;
-        w.write(self.author.as_bytes())?;
-        w.write(b"\n")?;
+        w.write_all(b"& ")?;
+        w.write_all(self.author.as_bytes())?;
+        w.write_all(b"\n")?;
 
         Ok(())
     }

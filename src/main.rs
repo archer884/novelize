@@ -4,7 +4,7 @@ mod command;
 
 use command::Command;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, Result, Write};
+use std::io::{self, BufRead, BufReader, Result, Stdin, Write};
 
 fn main() {
     use std::error::Error;
@@ -17,7 +17,7 @@ fn main() {
 
 fn run<F: Fn() -> Command>(command_provider: F) -> Result<()> {
     let command = command_provider();
-    let files = read_listing()?;
+    let files = read_listing(&io::stdin())?;
 
     let out = io::stdout();
     let mut out = out.lock();
@@ -25,20 +25,17 @@ fn run<F: Fn() -> Command>(command_provider: F) -> Result<()> {
     command.write_headers(&mut out)?;
 
     for file in files {
-        io::copy(&mut open(file)?, &mut out)?;
-        out.write(b"\n")?;
+        io::copy(&mut open(&file)?, &mut out)?;
+        out.write_all(b"\n")?;
     }
 
     out.flush()
 }
 
-fn open(s: String) -> io::Result<BufReader<File>> {
-    File::open(s.trim()).map(|file| BufReader::new(file))
+fn open(s: &str) -> Result<BufReader<File>> {
+    File::open(s.trim()).map(BufReader::new)
 }
 
-fn read_listing() -> Result<Vec<String>> {
-    let stdin = io::stdin();
-    let stdin = stdin.lock();
-    let result = stdin.lines().collect();
-    result
+fn read_listing(stdin: &Stdin) -> Result<Vec<String>> {
+    stdin.lock().lines().collect()
 }

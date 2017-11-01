@@ -27,7 +27,7 @@ impl Command {
         w.write_all(self.title.as_bytes())?;
         w.write_all(b"\n")?;
 
-        w.write_all(b"& ")?;
+        w.write_all(b"% ")?;
         w.write_all(self.author.as_bytes())?;
         w.write_all(b"\n\n")?;
 

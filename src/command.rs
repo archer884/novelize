@@ -16,8 +16,8 @@ impl Command {
         ).get_matches();
 
         // Panics resulting from the following unwrap calls are rendered impossible by clap.
-        let title = matches.value_of("title").unwrap().to_string();
-        let author = matches.value_of("author").unwrap().to_owned();
+        let title = matches.value_of("title").unwrap().into();
+        let author = matches.value_of("author").unwrap().into();
 
         Self { title, author }
     }
